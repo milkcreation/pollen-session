@@ -12,7 +12,7 @@ class SessionServiceProvider extends BaseServiceProvider
      * @inheritDoc
      */
     protected $provides = [
-        SessionInterface::class
+        SessionManagerInterface::class
     ];
 
     /**
@@ -20,8 +20,8 @@ class SessionServiceProvider extends BaseServiceProvider
      */
     public function register(): void
     {
-        $this->getContainer()->share(SessionInterface::class, function () {
-            return new Session([], $this->getContainer());
+        $this->getContainer()->share(SessionManagerInterface::class, function () {
+            return new SessionManager([], $this->getContainer());
         });
     }
 }
