@@ -6,12 +6,13 @@ namespace Pollen\Session;
 
 use BadMethodCallException;
 use Exception;
-use Pollen\Support\Concerns\ConfigBagTrait;
+use Pollen\Support\Concerns\ConfigBagAwareTrait;
 use Pollen\Support\Concerns\ContainerAwareTrait;
 use Psr\Container\ContainerInterface as Container;
 use SessionHandler;
 use SessionHandlerInterface;
 use Symfony\Component\HttpFoundation\Session\Storage\Handler\StrictSessionHandler;
+use RuntimeException;
 use Throwable;
 
 /**
@@ -19,8 +20,14 @@ use Throwable;
  */
 class SessionManager implements SessionManagerInterface
 {
-    use ConfigBagTrait;
+    use ConfigBagAwareTrait;
     use ContainerAwareTrait;
+
+    /**
+     * Instance principale.
+     * @var static|null
+     */
+    private static $instance;
 
     /**
      * Instance du gestionnaire de processus session.
@@ -39,6 +46,23 @@ class SessionManager implements SessionManagerInterface
         if (!is_null($container)) {
             $this->setContainer($container);
         }
+
+        if (!self::$instance instanceof static) {
+            self::$instance = $this;
+        }
+    }
+
+    /**
+     * Récupération de l'instance principale.
+     *
+     * @return static
+     */
+    public static function getInstance(): SessionManagerInterface
+    {
+        if (self::$instance instanceof self) {
+            return self::$instance;
+        }
+        throw new RuntimeException(sprintf('Unavailable [%s] instance', __CLASS__));
     }
 
     /**

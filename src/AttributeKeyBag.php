@@ -12,7 +12,7 @@ class AttributeKeyBag implements AttributeKeyBagInterface
     /**
      * @var array
      */
-    protected $attributes = [];
+    private $attributes = [];
 
     /**
      * @var string $key
@@ -45,9 +45,21 @@ class AttributeKeyBag implements AttributeKeyBagInterface
         return count($this->attributes[$this->key] ?? []);
     }
 
+    public function forget(array $names): void
+    {
+        foreach($names as $name) {
+            $this->remove($name);
+        }
+    }
+
     public function get(string $name, $default = null)
     {
         return Arr::get($this->attributes, "{$this->key}.{$name}", $default);
+    }
+
+    public function getKey(): string
+    {
+        return $this->key;
     }
 
     public function getIterator(): iterable
@@ -65,9 +77,14 @@ class AttributeKeyBag implements AttributeKeyBagInterface
         $this->attributes = &$array;
     }
 
-    public function set(string $name, $value): void
+    public function pull(string $name, $default = null)
     {
-        Arr::set($this->attributes, "{$this->key}.{$name}", $value);
+       return Arr::pull($this->attributes, "{$this->key}.{$name}", $default);
+    }
+
+    public function remove(string $name): void
+    {
+        Arr::forget($this->attributes, "{$this->key}.{$name}");
     }
 
     public function replace(array $attributes): void
@@ -78,8 +95,8 @@ class AttributeKeyBag implements AttributeKeyBagInterface
         }
     }
 
-    public function remove(string $name): void
+    public function set(string $name, $value): void
     {
-        Arr::forget($this->attributes, "{$this->key}.{$name}");
+        Arr::set($this->attributes, "{$this->key}.{$name}", $value);
     }
 }
