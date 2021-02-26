@@ -7,7 +7,7 @@ namespace Pollen\Session;
 use BadMethodCallException;
 use Exception;
 use Pollen\Support\Concerns\ConfigBagAwareTrait;
-use Pollen\Support\Concerns\ContainerAwareTrait;
+use Pollen\Support\Proxy\ContainerProxy;
 use Psr\Container\ContainerInterface as Container;
 use SessionHandler;
 use SessionHandlerInterface;
@@ -21,7 +21,7 @@ use Throwable;
 class SessionManager implements SessionManagerInterface
 {
     use ConfigBagAwareTrait;
-    use ContainerAwareTrait;
+    use ContainerProxy;
 
     /**
      * Instance principale.
@@ -66,7 +66,14 @@ class SessionManager implements SessionManagerInterface
     }
 
     /**
-     * @inheritDoc
+     * Délégation d'appel des méthodes du système de session.
+     *
+     * @param string $method
+     * @param array $arguments
+     *
+     * @return mixed
+     *
+     * @throws Exception
      */
     public function __call(string $method, array $arguments)
     {
@@ -80,7 +87,7 @@ class SessionManager implements SessionManagerInterface
                     'Session method call [%s] throws an exception: %s',
                     $method,
                     $e->getMessage()
-                )
+                ), 0, $e
             );
         }
     }

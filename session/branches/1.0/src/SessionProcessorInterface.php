@@ -6,13 +6,17 @@ namespace Pollen\Session;
 
 use Countable;
 use IteratorAggregate;
+use Pollen\Session\Concerns\FlashBagAwareTraitInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 /**
- * @mixin \Pollen\Session\Concerns\FlashBagAwareTrait
  * @mixin \Symfony\Component\HttpFoundation\Session\Session
  */
-interface SessionProcessorInterface extends SessionInterface, IteratorAggregate, Countable
+interface SessionProcessorInterface extends
+    Countable,
+    FlashBagAwareTraitInterface,
+    IteratorAggregate,
+    SessionInterface
 {
     /**
      * Déclaration d'un gestionnaire d'attributs de session dédié à une clé d'indice particulière.

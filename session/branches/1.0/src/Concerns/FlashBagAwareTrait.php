@@ -8,6 +8,9 @@ use InvalidArgumentException;
 use Pollen\Session\FlashBagInterface;
 use RuntimeException;
 
+/**
+ * @see \Pollen\Session\Concerns\FlashBagAwareTraitInterface
+ */
 trait FlashBagAwareTrait
 {
     /**
