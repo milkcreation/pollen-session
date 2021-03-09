@@ -14,7 +14,7 @@ interface FlashBagAwareTraitInterface
      * @param string|array|null $key
      * @param mixed $default
      *
-     * @return string|array|object|null|FlashBagInterface
+     * @return string|array|object|FlashBagInterface
      */
     public function flash($key = null, $default = null);
 

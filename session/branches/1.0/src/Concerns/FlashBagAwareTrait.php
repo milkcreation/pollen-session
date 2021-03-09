@@ -25,7 +25,7 @@ trait FlashBagAwareTrait
      * @param string|array|null $key
      * @param mixed $default
      *
-     * @return string|array|object|null|FlashBagInterface
+     * @return string|array|object|FlashBagInterface
      */
     public function flash($key = null, $default = null)
     {
@@ -56,7 +56,7 @@ trait FlashBagAwareTrait
             foreach($key as $k => $v) {
                 $this->flashBag->set($k, $v);
             }
-            return null;
+            return $this->flashBag;
         }
 
         throw new InvalidArgumentException('FlashBag method arguments invalid');
