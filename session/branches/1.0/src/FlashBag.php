@@ -87,6 +87,23 @@ class FlashBag extends BaseFlashBag implements FlashBagInterface
     /**
      * @inheritDoc
      */
+    public function push(string $type, $value): void
+    {
+        if (!Arr::has($this->attributes, "new.{$type}")) {
+            $this->set($type, []);
+        }
+
+        $arr = Arr::get($this->attributes, "new.{$type}");
+
+        if (is_array($arr)) {
+            $arr[] = $value;
+            $this->set($type, $arr);
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function read(string $type, $default = null)
     {
         if (!$this->has($type)) {
