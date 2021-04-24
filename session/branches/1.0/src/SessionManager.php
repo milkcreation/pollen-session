@@ -13,6 +13,8 @@ use Psr\Container\ContainerInterface as Container;
 use SessionHandler;
 use SessionHandlerInterface;
 use Symfony\Component\HttpFoundation\Session\Storage\Handler\StrictSessionHandler;
+use Symfony\Component\Security\Csrf\CsrfToken;
+use Symfony\Component\Security\Csrf\CsrfTokenManager;
 use RuntimeException;
 use Throwable;
 
@@ -35,6 +37,12 @@ class SessionManager implements SessionManagerInterface
      * @var SessionProcessorInterface
      */
     private $sessionProcessor;
+
+    /**
+     * Identifiant de qualification de protection contre les attaques CSRF.
+     * @var string|null
+     */
+    protected $tokenID;
 
     /**
      * @param array $config
@@ -116,6 +124,58 @@ class SessionManager implements SessionManagerInterface
     }
 
     /**
+     * Récupération de la clé d'identification de protection contre les attaques CSRF.
+     *
+     * @return string
+     */
+    protected function getTokenID(): string
+    {
+        if ($this->tokenID === null) {
+            throw new RuntimeException(
+                '[Session Manager] Protection against CSRF attacks requires a valid key.'
+            );
+        }
+
+        return $this->tokenID;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getToken(?string $tokenID = null): string
+    {
+        if ($tokenID === null) {
+            $tokenID = $this->getTokenID();
+        }
+
+        return (new CsrfTokenManager())->getToken($tokenID)->getValue();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function removeToken(?string $tokenID = null): SessionManagerInterface
+    {
+        if ($tokenID === null) {
+            $tokenID = $this->getTokenID();
+        }
+
+        (new CsrfTokenManager())->removeToken($tokenID);
+
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setTokenID(string $tokenID): SessionManagerInterface
+    {
+        $this->tokenID = $tokenID;
+
+        return $this;
+    }
+
+    /**
      * @inheritDoc
      */
     public function processor(): SessionProcessorInterface
@@ -124,5 +184,19 @@ class SessionManager implements SessionManagerInterface
             $this->sessionProcessor = $this->createNativeProcessor();
         }
         return $this->sessionProcessor;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function verifyToken(string $value, ?string $tokenID = null): bool
+    {
+        if ($tokenID === null) {
+            $tokenID = $this->getTokenID();
+        }
+        $tokenManager = new CsrfTokenManager();
+        $token = new CsrfToken($tokenID, $value);
+
+        return $tokenManager->isTokenValid($token);
     }
 }
