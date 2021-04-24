@@ -132,6 +132,81 @@ $session->flash()->remove('key1');
 $session->flash()->clear();
 ```
 
+## CSRF Protection
+
+Session provides a protection system against CSRF attacks.
+
+### Set Token ID
+
+Ideally, use a string of at least 32 characters.
+If the APP_KEY environment variable is entered, this configuration is optional.
+
+```php
+use Pollen\Session\SessionManager;
+
+$session = new SessionManager();
+$session->setTokenID('example_token_id');
+```
+
+### Basic token verification process
+
+```php
+use Pollen\Session\SessionManager;
+
+$session = new SessionManager();
+$session->setTokenID('example_token_id');
+
+$token = $session->getToken();
+
+var_dump($session->verifyToken($token));
+```
+
+### Custom token verification process
+
+```php
+use Pollen\Session\SessionManager;
+
+$session = new SessionManager();
+
+$token = $session->getToken('custom_token_id');
+
+var_dump($session->verifyToken($token, 'custom_token_id'));
+```
+
+### Form workflow
+
+1. Create a CSRF token.
+
+```php
+use Pollen\Session\SessionManager;
+
+$session = new SessionManager();
+
+$csrf_token = $session->getToken();
+```
+
+2. Submit a form with CSRF token.
+
+```html
+<form method="post">
+    <input type="hidden" name="token" value="{{ csrf_token }}">
+    <button type="submit">Submit</button>
+</form>
+```
+
+3. Catch and verify CSRF token submission.
+
+```php
+use Pollen\Session\SessionManager;
+use Pollen\Http\Request;
+
+$session = new SessionManager();
+$request = Request::createFromGlobals();
+$token = $request->request->get('token');
+
+var_dump($session->verifyToken($token));
+```
+
 ## Advanced usage
 
 ### Access to the session through an HTTP Request

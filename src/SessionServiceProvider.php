@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Pollen\Session;
 
 use Pollen\Container\BaseServiceProvider;
+use Pollen\Support\Env;
 
 class SessionServiceProvider extends BaseServiceProvider
 {
@@ -21,7 +22,13 @@ class SessionServiceProvider extends BaseServiceProvider
     public function register(): void
     {
         $this->getContainer()->share(SessionManagerInterface::class, function () {
-            return new SessionManager([], $this->getContainer());
+            $sessionManager = new SessionManager([], $this->getContainer());
+
+            if ($tokenID = Env::get('APP_KEY')) {
+                $sessionManager->setTokenID($tokenID);
+            }
+
+            return $sessionManager;
         });
     }
 }
