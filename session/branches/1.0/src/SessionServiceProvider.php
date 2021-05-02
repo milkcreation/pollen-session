@@ -10,7 +10,7 @@ use Pollen\Support\Env;
 class SessionServiceProvider extends BaseServiceProvider
 {
     /**
-     * @inheritDoc
+     * @var string[]
      */
     protected $provides = [
         SessionManagerInterface::class
