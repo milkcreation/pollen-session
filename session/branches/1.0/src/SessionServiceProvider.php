@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Pollen\Session;
 
-use Pollen\Container\BaseServiceProvider;
+use Pollen\Container\BootableServiceProvider;
 use Pollen\Support\Env;
 
-class SessionServiceProvider extends BaseServiceProvider
+class SessionServiceProvider extends BootableServiceProvider
 {
     /**
      * @var string[]
