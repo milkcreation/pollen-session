@@ -1,26 +1,20 @@
 {
   "name": "pollen-solutions/session",
   "description": "Pollen Session Component - HTTP Request User's session store and query information.",
-  "homepage": "https://www.presstify.com/pollen-solutions/session/",
+  "homepage": "https://github.com/milkcreation/pollen-session.git",
   "keywords": [
     "pollen-solutions",
     "component",
     "http",
     "session"
   ],
-  "time": "2021-05-11",
+  "time": "2021-09-15",
   "license": "MIT",
   "authors": [
     {
       "name": "Jordy Manner",
       "email": "jordy@presstify.com",
       "role": "Developper"
-    }
-  ],
-  "repositories": [
-    {
-      "type": "composer",
-      "url": "https://composer.presstify.com/pollen-solutions/"
     }
   ],
   "require": {
